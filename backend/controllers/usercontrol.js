@@ -5,18 +5,18 @@ import transporter from '../config/emailconfig.js'
 
 class Usercontrol {
     static userRegister = async (req, res) => {
-        const { fullName, phoneno, email, password, } = req.body
+        const { fullName, phoneNumber, email, password, } = req.body
         const user = await UserModel.findOne({ email: email })
         if (user) {
             res.send({ "status": "failed", "message": "Email already exists" })
         } else {
-            if (fullName && phoneno && email && password) {
+            if (fullName && phoneNumber && email && password) {
                 try {
                     const salt = await bcrypt.genSalt(12);
                     const hp = await bcrypt.hash(password, salt);
                     const doc = new UserModel({
                         fullName: fullName,
-                        phoneno:phoneno,
+                        phoneNumber:phoneNumber,
                         email: email,
                         password: hp,
                     });
