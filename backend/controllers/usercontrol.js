@@ -2,6 +2,8 @@ import UserModel from '../models/user.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import transporter from '../config/emailconfig.js'
+import CourseModel from '../models/course.js';
+import programmodle from '../models/programming.js';
 
 class Usercontrol {
     static userRegister = async (req, res) => {
@@ -131,6 +133,59 @@ class Usercontrol {
         } catch (error) {
             console.log(error)
             res.send({ "status": "failed", "message": "Invalid Token" });
+        }
+    }
+    static pl = async(req,resp) =>{
+        const {language} = req.body;
+        if(language){
+            const data = programmodle({
+                languagename : language
+            });
+            const savelanguage = await data.save();
+            if(savelanguage){
+                return resp.status(200).json({message:"Language:",data});
+            }
+            else{
+                return resp.status(400).json({message:"Language is not save"});
+            }
+        }
+    }
+    static fetchpl = async(req,resp)=>{
+        const fetch = await programmodle.find({})
+        if(fetch){
+            return resp.status(200).json({fetch});
+        }
+        else{
+            return resp.status(400).json({message:"Data is not able to fetch"});
+        }
+    }
+    static Course = async(req,resp)=>{
+        const {name,programming,price,duration} = req.body;
+
+        if(name && programming && price && duration )
+        {
+            const data = CourseModel({
+                name:name,
+                programming:programming,
+                price:price,
+                duration:duration
+            })
+            const savedata = await data.save();
+            if(savedata){
+                return resp.status(200).json({message:"Data is save"})
+            }
+            else{
+                return resp.status(400).json({message:"Data is not save"});
+            }
+        }
+    }
+    static fetchcourse = async(req,resp)=>{
+        const fetch = await CourseModel.find({});
+        if(fetch){
+            return resp.status(200).json({fetch})
+        }
+        else{
+            return resp.status(400).json({message:"Data is not fetch"});
         }
     }
 }
